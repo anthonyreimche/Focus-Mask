@@ -308,8 +308,7 @@ function de() {
 	H = [], Y?.(), Y = null, J = null, V?.getState().on && j.develop.setViewValues(null), V = null, G = "null";
 }
 function Z() {
-	let e = new URLSearchParams(window.location.search).get("detached");
-	return (j.stores.useUIStore.getState().activeModule === "develop" || e === "develop") && !!j.stores.useDevelopStore.getState().photoId;
+	return j.navigation.current() === "develop" && !!j.stores.useDevelopStore.getState().photoId;
 }
 //#endregion
 //#region src/Toolbar.tsx
@@ -336,11 +335,11 @@ function fe(e) {
 		let e = (e) => {
 			let t = c.current?.parentElement;
 			t && e.target instanceof Node && !t.contains(e.target) && l();
-		}, t = (e) => {
-			e.key === "Escape" && (e.stopPropagation(), l());
 		};
-		return document.addEventListener("pointerdown", e, !0), window.addEventListener("keydown", t, !0), () => {
-			document.removeEventListener("pointerdown", e, !0), window.removeEventListener("keydown", t, !0);
+		document.addEventListener("pointerdown", e, !0);
+		let t = j.ui.onEscape(l);
+		return () => {
+			document.removeEventListener("pointerdown", e, !0), t();
 		};
 	}, [l]), /* @__PURE__ */ A.createElement("div", {
 		ref: c,

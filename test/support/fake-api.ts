@@ -49,7 +49,8 @@ type FakeMembers = Pick<
   settings: SafelightAPI["settings"];
   keybindings: Pick<SafelightAPI["keybindings"], "getBinding">;
   components: Pick<SafelightAPI["components"], "Slider">;
-  ui: Pick<SafelightAPI["ui"], "Field" | "SegmentedControl" | "Select" | "Stack" | "tokens">;
+  navigation: Pick<SafelightAPI["navigation"], "current">;
+  ui: Pick<SafelightAPI["ui"], "Field" | "SegmentedControl" | "Select" | "Stack" | "tokens" | "onEscape">;
   develop: Pick<SafelightAPI["develop"], "setViewValues" | "prewarmStages">;
   stores: { useDevelopStore: Store<DevelopSlice>; useCatalogStore: Store<CatalogSlice>; useUIStore: Store<UiSlice>; create: SafelightAPI["stores"]["create"] };
 };
@@ -69,6 +70,14 @@ export interface Rig {
   develop: Store<DevelopSlice>;
   catalog: Store<CatalogSlice>;
   ui: Store<UiSlice>;
+  /** The module navigation.current() answers, apart from the UI store the view listens to. */
+  nav: { module: string };
+  /** Moves both: what navigation answers and the store whose change the view hears. */
+  goTo(module: string): void;
+  /** How many onEscape handlers are held now. */
+  escapeHolders(): number;
+  /** Presses Escape: the newest holder gets it. */
+  pressEscape(): void;
   /** The labels of the undo steps the extension made. */
   commits: string[];
   /** The latest props of each slider drawn in `root`, in document order. */
@@ -111,6 +120,8 @@ export function fakeApi(): Rig {
   }));
   const catalog = create<CatalogSlice>()(() => ({ photos: [photo("p1", 3200), photo("p2", 100)] }));
   const ui = create<UiSlice>()(() => ({ activeModule: "develop" }));
+  const nav = { module: "develop" };
+  const escapes: (() => void)[] = [];
 
   function Slider(props: SliderProps) {
     const id = React.useRef(nextSlider++).current;
@@ -164,7 +175,12 @@ export function fakeApi(): Rig {
       Select,
       Stack: ({ children }) => React.createElement("div", null, children),
       tokens: TOKENS,
+      onEscape: (handler) => {
+        escapes.push(handler);
+        return () => void escapes.splice(escapes.indexOf(handler), 1);
+      },
     },
+    navigation: { current: () => nav.module },
     develop: {
       setViewValues: (values) => void viewValues.push(values),
       prewarmStages: () => void prewarms++,
@@ -187,6 +203,13 @@ export function fakeApi(): Rig {
     develop,
     catalog,
     ui,
+    nav,
+    goTo: (module) => {
+      nav.module = module;
+      ui.setState({ activeModule: module });
+    },
+    escapeHolders: () => escapes.length,
+    pressEscape: () => escapes.at(-1)?.(),
     commits,
     sliders: (root) =>
       [...root.querySelectorAll("[data-slider]")].map((el) => {

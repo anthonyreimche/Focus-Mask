@@ -76,16 +76,14 @@ describe("the options card", () => {
     expect(rig.develop.getState().paramBag).toEqual({});
   });
 
-  it("closes on Escape without the app seeing it", () => {
+  it("closes on Escape through the app's Escape stack, and gives the key back", () => {
     render(<FocusToolbar />);
+    expect(rig.escapeHolders()).toBe(0);
     fireEvent.click(optionsButton());
-    let reached = false;
-    const listener = () => void (reached = true);
-    document.addEventListener("keydown", listener);
-    fireEvent.keyDown(document.body, { key: "Escape" });
-    document.removeEventListener("keydown", listener);
+    expect(rig.escapeHolders()).toBe(1);
+    act(() => rig.pressEscape());
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(reached).toBe(false);
+    expect(rig.escapeHolders()).toBe(0);
   });
 
   it("closes on a press outside it, and stays open for one inside", () => {

@@ -30,8 +30,8 @@ describe("building ahead", () => {
   it("asks again for another photo, and not again for the same one", () => {
     activate(rig.api);
     idle();
-    rig.ui.setState({ activeModule: "library" });
-    rig.ui.setState({ activeModule: "develop" });
+    rig.goTo("library");
+    rig.goTo("develop");
     idle();
     expect(rig.prewarms()).toBe(1);
     rig.develop.setState({ photoId: "p2" });
@@ -40,10 +40,10 @@ describe("building ahead", () => {
   });
 
   it("waits for Develop and a photo", () => {
-    rig.ui.setState({ activeModule: "library" });
+    rig.goTo("library");
     activate(rig.api);
     idle();
-    rig.ui.setState({ activeModule: "develop" });
+    rig.goTo("develop");
     rig.develop.setState({ photoId: null });
     idle();
     expect(rig.prewarms()).toBe(0);

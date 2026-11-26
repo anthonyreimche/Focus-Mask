@@ -32,7 +32,7 @@ describe("activate", () => {
     expect(rig.keys.map((k) => [k.id, k.defaultCombo, k.category])).toEqual([[TOGGLE_ACTION, "Shift+F", "Develop"]]);
     rig.keys[0].handler();
     expect(viewStore().getState().on).toBe(true);
-    rig.ui.setState({ activeModule: "library" });
+    rig.nav.module = "library";
     rig.keys[0].handler();
     expect(viewStore().getState().on).toBe(true);
   });
@@ -58,11 +58,11 @@ describe("the manifest", () => {
   it("names the contributions' id and needs the build with view-only stages", () => {
     expect(EXTENSION_ID).toBe(manifest.id);
     expect(STAGE_ID.startsWith(`${manifest.id}.`)).toBe(true);
-    expect(manifest.minAppVersion).toBe("3.2.4");
+    expect(manifest.minAppVersion).toBe("3.2.8");
   });
 
   it("says the same version as package.json", () => {
-    expect(manifest.version).toBe("1.0.0");
+    expect(manifest.version).toBe("1.0.1");
     expect(pkg.version).toBe(manifest.version);
   });
 });

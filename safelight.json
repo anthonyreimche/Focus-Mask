@@ -1,7 +1,7 @@
 {
   "id": "focus-mask",
   "name": "Focus Mask",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Highlights what is in sharp focus on the Develop canvas, as a tint or as coloured edges, so you can judge focus and compare frames without zooming to 100 %. A view aid only: it never reaches your edits or exports.",
   "author": "Anthony Reimche",
   "main": "dist/index.js",
@@ -9,5 +9,5 @@
   "categories": ["Develop", "Workflow", "Detail"],
   "keywords": ["focus", "focus peaking", "peaking", "sharpness", "in focus", "culling", "overlay"],
   "repository": "anthonyreimche/Focus-Mask",
-  "minAppVersion": "3.2.4"
+  "minAppVersion": "3.2.8"
 }

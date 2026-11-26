@@ -49,17 +49,11 @@ function Options(props: { onClose: () => void }) {
       const anchor = card.current?.parentElement;
       if (anchor && e.target instanceof Node && !anchor.contains(e.target)) onClose();
     };
-    // Captured ahead of the app's own Escape handling, which would act as well.
-    const escape = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      e.stopPropagation();
-      onClose();
-    };
     document.addEventListener("pointerdown", away, true);
-    window.addEventListener("keydown", escape, true);
+    const giveBack = api.ui.onEscape(onClose);
     return () => {
       document.removeEventListener("pointerdown", away, true);
-      window.removeEventListener("keydown", escape, true);
+      giveBack();
     };
   }, [onClose]);
 

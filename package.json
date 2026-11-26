@@ -1,7 +1,7 @@
 {
   "name": "safelight-focus-mask",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Focus Mask extension for Safelight: highlights the in-focus parts of the photo on the Develop canvas, as a tint or as focus-peaking edges.",
   "type": "module",
   "scripts": {
